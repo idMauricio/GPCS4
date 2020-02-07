@@ -22,6 +22,7 @@
     <ClInclude Include="Algorithm\MurmurHash2.h" />
     <ClInclude Include="Algorithm\sha1.h" />
     <ClInclude Include="Algorithm\Sha1Hash.h" />
+    <ClInclude Include="Common\GPCS4CommandLine.h" />
     <ClInclude Include="Common\GPCS4Decoration.h" />
     <ClInclude Include="Common\GPCS4Log.h" />
     <ClInclude Include="Common\GPCS4Types.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="Algorithm\MurmurHash2.cpp" />
     <ClCompile Include="Algorithm\sha1.c" />
     <ClCompile Include="Algorithm\Sha1Hash.cpp" />
+    <ClCompile Include="Common\GPCS4CommandLine.cpp" />
     <ClCompile Include="Common\GPCS4Log.cpp" />
     <ClCompile Include="Emulator\Emulator.cpp" />
     <ClCompile Include="Emulator\GameThread.cpp" />

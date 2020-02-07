@@ -3,40 +3,11 @@
 #include "Emulator/TLSHandler.h"
 #include "Loader/ModuleLoader.h"
 
-#include <cxxopts/cxxopts.hpp>
 #include <memory>
 
 #include "SceModules/SceAudioOut/sce_audioout.h"
 
 LOG_CHANNEL(Main);
-
-cxxopts::ParseResult processCommandLine(int argc, char* argv[])
-{
-	cxxopts::Options opts("GPCS4", "PlayStation 4 Emulator");
-	opts.allow_unrecognised_options();
-	opts.add_options()
-		("E,eboot", "Set main executable. The folder where GPCS4.exe located will be mapped to /app0.", cxxopts::value<std::string>())
-		("D,debug-channel", "Enable debug channel. 'ALL' for all channels.", cxxopts::value<std::vector<std::string>>())
-		("L,list-channels", "List debug channels.")
-		("H,help", "Print help message.")
-		;
-
-	// Backup arg count,
-	// because cxxopts will change argc value internally,
-	// which I think is a bad design.
-	const uint32_t argCount = argc;
-
-	auto optResult          = opts.parse(argc, argv);
-	if (optResult.count("H") || argCount < 2)
-	{
-		auto helpString = opts.help();
-		printf("%s\n", helpString.c_str());
-		exit(-1);
-	}
-
-	return optResult;
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -47,12 +18,12 @@ int main(int argc, char *argv[])
 
 	do
 	{
-		auto optResult = processCommandLine(argc, argv);
+		processCommandLine(argc, argv);
 
 		// Initialize log system.
-		logsys::init(optResult);
+		logsys::init();
 
-		if (!optResult["E"].count())
+		if (g_CommandLineArgs.m_sEBoot.empty())
 		{
 			break;
 		}
@@ -74,7 +45,8 @@ int main(int argc, char *argv[])
 		CLinker linker      = {*CSceModuleSystem::GetInstance()};
 		ModuleLoader loader = { *CSceModuleSystem::GetInstance(), linker };
 
-		auto eboot                      = optResult["E"].as<std::string>();
+		auto eboot = g_CommandLineArgs.m_sEBoot;
+		
 		MemoryMappedModule *ebootModule = nullptr;
 		if (!loader.loadModule(eboot, &ebootModule))
 		{

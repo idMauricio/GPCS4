@@ -7,8 +7,8 @@
 #include "Platform/UtilString.h"
 
 #include <cstdio>
-#include <memory>
 #include <cxxopts/cxxopts.hpp>
+#include <memory>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -33,9 +33,9 @@ void showMessageBox(const char* title, const char* message)
 
 #endif  //GPCS4_WINDOWS
 
-
 namespace logsys
-{;
+{
+;
 
 static std::unique_ptr<spdlog::logger> g_logger;
 
@@ -63,42 +63,30 @@ void initSpdLog()
 	//g_logger->flush_on(spdlog::level::trace); // I/O cost
 }
 
-void initLogChannel(const cxxopts::ParseResult& optResult)
+void initLogChannel()
 {
 	/// Init log channel
-
-	if (optResult.count("D"))
+	for (auto&& s : g_CommandLineArgs.m_vsDebugChannel)
 	{
-		auto ls = optResult["D"].as<std::vector<std::string>>();
-
-		for (auto&& s : ls)
+		for (auto&& p : ChannelContainer::get()->getChannels())
 		{
-			for (auto&& p : ChannelContainer::get()->getChannels())
-			{
-				p->checkSig(s);
-			}
+			p->checkSig(s);
 		}
 	}
-	else if (optResult.count("L"))
+
+	if (g_CommandLineArgs.m_bListDebugChannel)
 	{
 		for (auto&& p : ChannelContainer::get()->getChannels())
 		{
 			printf("%s\n", p->getName().c_str());
 		}
 	}
-	//else
-	//{
-	//	for (auto&& p : ChannelContainer::get()->getChannels())
-	//	{
-	//		p->checkSig("ALL");
-	//	}
-	//}
 }
 
-void init(const cxxopts::ParseResult& optResult)
+void init()
 {
 	initSpdLog();
-	initLogChannel(optResult);
+	initLogChannel();
 }
 
 void Channel::print(Level nLevel, const char* szFunction, const char* szSourcePath, int nLine, const char* szFormat, ...)
@@ -176,11 +164,11 @@ Channel::Channel(const std::string& n) :
 
 void Channel::checkSig(const std::string& n)
 {
-	do 
+	do
 	{
 		if (m_enabled)
 		{
-			// Already enabled, shouldn't be disabled again. 
+			// Already enabled, shouldn't be disabled again.
 			break;
 		}
 
@@ -192,7 +180,7 @@ void Channel::checkSig(const std::string& n)
 		m_enabled = false;
 
 		bool notMatch = false;
-		auto up = UtilString::Split(n, '.');
+		auto up       = UtilString::Split(n, '.');
 		for (size_t i = 0; i < up.size() && i < m_channelNameList.size(); ++i)
 		{
 			if (up[i] != m_channelNameList[i])
@@ -243,4 +231,4 @@ ChannelContainer::ChannelContainer()
 {
 }
 
-}  // namespace log
+}  // namespace logsys

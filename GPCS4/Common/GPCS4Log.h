@@ -5,15 +5,10 @@
 #include <string>
 #include <vector>
 
-namespace cxxopts
-{;
-class ParseResult;
-}  // namespace cxxopts
-
 namespace logsys
 {;
 
-void init(const cxxopts::ParseResult& optResult);
+void init();
 
 enum class Level : int
 {

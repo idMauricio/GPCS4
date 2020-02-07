@@ -4,6 +4,7 @@
 #include "GPCS4Types.h"
 #include "GPCS4Log.h"
 #include "GPCS4Decoration.h"
+#include "GPCS4CommandLine.h"
 #include "IntelliSenseClang.h"
 #include "UtilRc.h"
 #include "UtilMath.h"
